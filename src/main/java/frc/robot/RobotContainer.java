@@ -34,10 +34,8 @@ public class RobotContainer {
   private final Grabber m_Grabber = new Grabber();
 
   // Buttons
-  private final JoystickButton driveToScoreButton = new JoystickButton(JOYSTICK1, DRIVE_TO_SCORE);
-  private final JoystickButton extend1Button = new JoystickButton(JOYSTICK1, ExtendOut);
-  private final JoystickButton GrabButton = new JoystickButton(JOYSTICK0, GrabB);
-  private final JoystickButton ReleaseButton = new JoystickButton(JOYSTICK0, RealeaseB);
+  private final JoystickButton GrabButton = new JoystickButton(JOYSTICK0, 3);
+  private final JoystickButton ReleaseButton = new JoystickButton(JOYSTICK0, 4);
   // Commands
 
   // private Command endAll = new InstantCommand(()->

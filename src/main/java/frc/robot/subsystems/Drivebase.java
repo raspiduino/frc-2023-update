@@ -8,6 +8,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.drive.MecanumDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +22,8 @@ public class Drivebase extends SubsystemBase {
   private WPI_TalonSRX leftBackMotor = new WPI_TalonSRX(LEFT_BACK);
   private WPI_TalonSRX rightFrontMotor = new WPI_TalonSRX(RIGHT_FRONT);
   private WPI_TalonSRX rightBackMotor = new WPI_TalonSRX(RIGHT_BACK);
-  private MecanumDrive mecanum;
+
+  private DifferentialDrive tank;
    
   //private ProfiledPIDController m_PIDController = new ProfiledPIDController(rP,rI,rD, new TrapezoidProfile.Constraints(rMaxSpeed, rMaxAccel));
 
@@ -44,8 +46,33 @@ public class Drivebase extends SubsystemBase {
     // rightBackMotor.setSafetyEnabled(false);
 
     rightFrontMotor.setInverted(true);
-    rightBackMotor.setInverted(true);
-    mecanum = new MecanumDrive(leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor);
+    leftFrontMotor.setInverted(true);
+
+    leftBackMotor.follow(leftFrontMotor);
+    rightBackMotor.follow(rightFrontMotor);
+    //mecanum = new MecanumDrive(leftFrontMotor, leftBackMotor, rightFrontMotor, rightBackMotor);
+    tank = new DifferentialDrive(rightFrontMotor, leftFrontMotor);
+  }
+
+  /**
+   * Drive method for Mecanum platform.
+   *
+   * <p>Angles are measured clockwise from the positive X axis. The robot's speed is
+   * independent of its angle or rotation rate.
+   *
+   * @param xSpeed The robot's speed along the X axis [-1.0..1.0]. Forward is positive.
+   * @param ySpeed The robot's speed along the Y axis [-1.0..1.0]. Right is positive.
+   * @param zRotation The robot's rotation rate around the Z axis [-1.0..1.0]. Clockwise is
+   *     positive.
+   */
+  public void drive(double x, double y, double rotation)
+  {
+    if (notNoise(x) || notNoise(y))
+    {
+      tank.arcadeDrive(y, x);
+    } else {
+      tank.arcadeDrive(0, 0);
+    }
   }
 
   /**
@@ -65,7 +92,7 @@ public class Drivebase extends SubsystemBase {
   {
     if (notNoise(x) || notNoise(y) || notNoise(rotation))
     {
-      mecanum.driveCartesian(x, y, rotation, gyroAngle);
+      //mecanum.driveCartesian(x, y, rotation, gyroAngle);
     }
   }
 
